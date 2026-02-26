@@ -1,4 +1,4 @@
-#include "XGBoost-From-Scratch/include/engine/XGBoost.hpp"
+#include "engine/XGBoost.hpp"
 
 #include <iostream>
 
