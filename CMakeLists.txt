@@ -5,7 +5,7 @@ project(XGBoostFromScratch)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-# 2. Tell CMake to find the pybind11 package installed via Homebrew
+set(PYBIND11_FINDPYTHON ON) 
 find_package(pybind11 REQUIRED)
 
 # 3. List ALL your .cpp files so the compiler knows what to build

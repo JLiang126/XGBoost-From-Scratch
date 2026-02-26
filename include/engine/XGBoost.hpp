@@ -13,7 +13,7 @@ class XGBoost
 {
 private:
     vector<Tree> forest;
-    Loss *objective;
+    shared_ptr<Loss> objective;
 
     int num_trees;
     float learning_rate;
@@ -24,7 +24,7 @@ private:
     float min_cover;
 
 public:
-    XGBoost(int num_trees, float learning_rate, int max_depth, float lambda, float gamma, float min_cover, Loss *objective);
+    XGBoost(int num_trees, float learning_rate, int max_depth, float lambda, float gamma, float min_cover, shared_ptr<Loss> objective);
     void train(const DataMatrix &data, const vector<float> &labels);
     float predict(const vector<float> &sample) const;
 };

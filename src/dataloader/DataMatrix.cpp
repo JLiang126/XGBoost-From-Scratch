@@ -27,7 +27,16 @@ DataMatrix::DataMatrix(const string &filepath) // This data matrix assumes all d
         vector<float> temp_row;
 
         while (getline(ss, cell, ','))
-            temp_row.push_back(stof(cell));
+        {
+            try
+            {
+                temp_row.push_back(std::stof(cell));
+            }
+            catch (const std::exception &e)
+            {
+                continue;
+            }
+        }
 
         temp_matrix.push_back(temp_row);
     }
@@ -36,9 +45,8 @@ DataMatrix::DataMatrix(const string &filepath) // This data matrix assumes all d
     if (num_rows > 0)
     {
         num_columns = temp_matrix[0].size() - 1;
-
         columns.resize(num_columns);
-        rows.reserve(num_rows);
+        rows.resize(num_rows);
         labels.reserve(num_rows);
     }
 

@@ -15,14 +15,19 @@ PYBIND11_MODULE(my_xgboost, m)
         .def(py::init<const std::string &>(), py::arg("filepath"))
         .def("get_num_rows", &DataMatrix::get_num_rows)
         .def("get_num_columns", &DataMatrix::get_num_columns)
+        .def("get_row", &DataMatrix::get_row, py::arg("row"))
+        .def("get_column", &DataMatrix::get_column, py::arg("column"))
         .def("get_labels", &DataMatrix::get_labels)
         .def("get_feature_names", &DataMatrix::get_feature_names);
-    py::class_<Loss>(m, "Loss");
-    py::class_<MSELoss, Loss>(m, "MSELoss")
+
+    py::class_<Loss, std::shared_ptr<Loss>>(m, "Loss");
+    py::class_<MSELoss, Loss, std::shared_ptr<MSELoss>>(m, "MSELoss")
+        .def(py::init<>());
+    py::class_<LogLoss, Loss, std::shared_ptr<LogLoss>>(m, "LogLoss")
         .def(py::init<>());
 
     py::class_<XGBoost>(m, "XGBoost")
-        .def(py::init<int, float, int, float, float, float, Loss *>(),
+        .def(py::init<int, float, int, float, float, float, shared_ptr<Loss>>(),
              py::arg("num_trees"),
              py::arg("learning_rate"),
              py::arg("max_depth"),

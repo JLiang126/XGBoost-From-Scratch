@@ -2,7 +2,7 @@
 
 #include <iostream>
 
-XGBoost::XGBoost(int num_trees, float learning_rate, int max_depth, float lambda, float gamma, float min_cover, Loss *objective) : num_trees(num_trees), learning_rate(learning_rate), max_depth(max_depth), lambda(lambda), gamma(gamma), min_cover(min_cover), objective(objective) {}
+XGBoost::XGBoost(int num_trees, float learning_rate, int max_depth, float lambda, float gamma, float min_cover, shared_ptr<Loss> objective) : num_trees(num_trees), learning_rate(learning_rate), max_depth(max_depth), lambda(lambda), gamma(gamma), min_cover(min_cover), objective(std::move(objective)) {}
 
 void XGBoost::train(const DataMatrix &data, const vector<float> &labels)
 {
@@ -21,7 +21,7 @@ void XGBoost::train(const DataMatrix &data, const vector<float> &labels)
         for (size_t j{0}; j < num_rows; j++)
             curr_preds[j] += learning_rate * XGTree.predict(data.get_row(j));
 
-        forest.push_back(move(XGTree));
+        forest.push_back(std::move(XGTree));
 
         cout << "Tree" << i << "/" << num_trees << "built" << endl;
     }
