@@ -34,7 +34,7 @@ public:
 class LogLoss : public Loss
 {
 private:
-    float sigmoid(int n) const;
+    float sigmoid(float n) const;
 
 public:
     virtual void compute_gradients(const vector<float> &preds,

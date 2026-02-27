@@ -12,8 +12,7 @@ void XGBoost::train(const DataMatrix &data, const vector<float> &labels)
 
     for (size_t i{0}; i < num_trees; i++)
     {
-        for (int j = 0; j < num_rows; j++)
-            objective->compute_gradients(curr_preds, labels, derivatives);
+        objective->compute_gradients(curr_preds, labels, derivatives);
 
         Tree XGTree(max_depth, lambda, gamma, min_cover);
         XGTree.build(data, derivatives);
@@ -23,7 +22,7 @@ void XGBoost::train(const DataMatrix &data, const vector<float> &labels)
 
         forest.push_back(std::move(XGTree));
 
-        cout << "Tree" << i << "/" << num_trees << "built" << endl;
+        cout << "Tree" << i + 1 << "/" << num_trees << "built" << endl;
     }
     return;
 }
@@ -34,4 +33,40 @@ float XGBoost::predict(const vector<float> &sample) const
     for (const auto &tree : forest)
         prediction += learning_rate * tree.predict(sample);
     return prediction;
+}
+
+void XGBoost::load_model(const string &filepath)
+{
+    ifstream in(filepath);
+
+    if (!in.is_open())
+        throw runtime_error("Could not open model: " + filepath);
+
+    in >> num_trees >> learning_rate >> max_depth;
+
+    forest.clear();
+
+    for (size_t i{0}; i < num_trees; i++)
+    {
+        Tree tree(max_depth, 0.0f, 0.0f, 0.0f);
+        tree.load(in);
+        forest.push_back(std::move(tree));
+    }
+
+    in.close();
+    return;
+}
+
+void XGBoost::save_model(const string &filepath) const
+{
+    ofstream out(filepath);
+    if (!out.is_open())
+        throw runtime_error("Could not open file to save model: " + filepath);
+
+    out << num_trees << " " << learning_rate << " " << max_depth << "\n";
+
+    for (const auto &tree : forest)
+        tree.save(out);
+
+    out.close();
 }

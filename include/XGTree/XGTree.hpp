@@ -1,5 +1,6 @@
 #pragma once
 
+#include <iostream>
 #include <memory>
 #include <vector>
 
@@ -32,9 +33,14 @@ private:
                    const vector<int> &row_idxs,
                    int curr_depth);
 
+    unique_ptr<Node> load_node(ifstream &in);
+    void save_node(ofstream &out, Node *curr) const;
+
 public:
     Tree(int max_depth, float reg_lambda, float gamma, float min_cover);
 
     void build(const DataMatrix &data, const vector<derivative> &derivatives);
     float predict(const vector<float> &features) const;
+    void load(ifstream &in);
+    void save(ofstream &out) const;
 };

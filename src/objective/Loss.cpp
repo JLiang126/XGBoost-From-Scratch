@@ -15,7 +15,7 @@ void MSELoss::compute_gradients(const vector<float> &preds,
     }
 }
 
-float LogLoss::sigmoid(int x) const { return 1.0f / (1.0f + exp(-x)); }
+float LogLoss::sigmoid(float x) const { return 1.0f / (1.0f + exp(-x)); }
 
 void LogLoss::compute_gradients(const vector<float> &preds,
                                 const vector<float> &labels,

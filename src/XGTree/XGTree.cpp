@@ -2,7 +2,9 @@
 
 #include <algorithm>
 #include <cmath>
+#include <fstream>
 #include <numeric>
+#include <string>
 
 Tree::Tree(int max_depth, float lambda, float gamma, float min_cover) : max_depth(max_depth), lambda(lambda), gamma(gamma), min_cover(min_cover) {}
 
@@ -43,6 +45,7 @@ void Tree::grow_tree(Node *curr,
     {
         curr->is_leaf = true;
         curr->leaf_weight = calc_leaf_weight(sum_g_root, sum_h_root);
+        return;
     }
 
     float best_gain = 0.0f;
@@ -64,8 +67,8 @@ void Tree::grow_tree(Node *curr,
 
         for (size_t j{0}; j < num_rows - 1; j++)
         {
-            int curr_idx = sorted_idxs[i];
-            int next_idx = sorted_idxs[i + 1];
+            int curr_idx = sorted_idxs[j];
+            int next_idx = sorted_idxs[j + 1];
 
             sum_g_left += derivatives[curr_idx].g;
             sum_h_left += derivatives[curr_idx].h;
@@ -115,6 +118,13 @@ void Tree::grow_tree(Node *curr,
             right_samples.push_back(i);
     }
 
+    if (left_samples.empty() || right_samples.empty())
+    {
+        curr->is_leaf = true;
+        curr->leaf_weight = calc_leaf_weight(sum_g_root, sum_h_root);
+        return;
+    }
+
     curr->left = make_unique<Node>();
     curr->right = make_unique<Node>();
 
@@ -133,3 +143,46 @@ void Tree::build(const DataMatrix &data, const vector<derivative> &derivatives)
     grow_tree(root.get(), data, derivatives, row_idxs, 0);
     return;
 }
+
+unique_ptr<Node> Tree::load_node(ifstream &in)
+{
+    string type;
+    if (!(in >> type))
+        return nullptr;
+
+    auto node = make_unique<Node>();
+
+    if (type == "L")
+    {
+        node->is_leaf = true;
+        in >> node->leaf_weight;
+    }
+    else if (type == "N")
+    {
+        node->is_leaf = false;
+        in >> node->split_feature >> node->split_val;
+
+        node->left = load_node(in);
+        node->right = load_node(in);
+    }
+
+    return node;
+}
+
+void Tree::load(ifstream &in) { root = load_node(in); }
+
+void Tree::save_node(ofstream &out, Node *curr) const
+{
+    if (!curr) return;
+
+    if (curr->is_leaf) out << "L " << curr->leaf_weight << "\n";
+    else
+    {
+        out << "N " << curr->split_feature << " " << curr->split_val << "\n";
+        save_node(out, curr->left.get());
+        save_node(out, curr->right.get());
+    }
+    return;
+}
+
+void Tree::save(ofstream &out) const { save_node(out, root.get()); }
