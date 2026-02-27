@@ -38,5 +38,7 @@ PYBIND11_MODULE(my_xgboost, m)
 
         // Expose the training and prediction methods
         .def("train", &XGBoost::train, py::arg("data"), py::arg("labels"))
-        .def("predict", &XGBoost::predict, py::arg("features"));
+        .def("predict", &XGBoost::predict, py::arg("features"))
+        .def("save_model", &XGBoost::save_model)
+        .def("load_model", &XGBoost::load_model);
 }

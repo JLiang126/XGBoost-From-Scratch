@@ -18,7 +18,9 @@ def train() -> int:
     print(f" - First 3 Labels: {target[:3]}")
 
     loss = my_xgboost.MSELoss()
-    model = my_xgboost.XGBoost(50, 0.1, 3, 1.5, 0.1, 1.0, loss)
+
+    # num_trees, learning_rate, max_depth, lambda, gamma, min_cover, objective
+    model = my_xgboost.XGBoost(50, 0.1, 3, 1.0, 0.0, 1.0, loss)
     print("Boost Initialised")
 
     go = input("Train? ")
@@ -32,6 +34,9 @@ def train() -> int:
     end_time = time.time()
 
     print(f"Training Complete in {end_time - start_time:.4f} seconds!")
+
+    model.save_model("sp500_model.txt")
+    print("Model saved to sp500_model.txt")
     return 0
 
 train()
