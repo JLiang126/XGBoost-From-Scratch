@@ -3,7 +3,7 @@ import pandas as pd
 import numpy as np
 
 print("Downloading S&P 500 data...")
-df = yf.download("^GSPC", start="2025-01-01", end="2026-02-26")
+df = yf.download("^GSPC", start="1986-01-01", end="2017-01-1")
 
 df.columns = df.columns.get_level_values(0)
 
@@ -37,7 +37,7 @@ df['target'] = df['returns'].shift(-1)
 # 5. Cleanup & Save
 # We drop the first 20 rows (MA/RSI warmup) and last row (target shift)
 final_df = df[feature_cols + ['target']].dropna()
-final_df.to_csv('sp500_test.csv', index=False)
+final_df.to_csv('sp500_train.csv', index=False)
 
-print(f"Done! Created 'sp500_train.csv' with {len(final_df)} rows and {len(feature_cols)} features.")
+print(f"Done! Created 'sp500_test.csv' with {len(final_df)} rows and {len(feature_cols)} features.")
 print("Features:", feature_cols)
