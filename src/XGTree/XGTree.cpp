@@ -112,7 +112,7 @@ void Tree::grow_tree(Node *curr,
     const vector<float> &best_column = data.get_column(best_feature_idx);
     for (int i : row_idxs)
     {
-        if (best_column[i] > best_spilt_val)
+        if (best_column[i] < best_spilt_val)
             left_samples.push_back(i);
         else
             right_samples.push_back(i);
@@ -173,9 +173,11 @@ void Tree::load(ifstream &in) { root = load_node(in); }
 
 void Tree::save_node(ofstream &out, Node *curr) const
 {
-    if (!curr) return;
+    if (!curr)
+        return;
 
-    if (curr->is_leaf) out << "L " << curr->leaf_weight << "\n";
+    if (curr->is_leaf)
+        out << "L " << curr->leaf_weight << "\n";
     else
     {
         out << "N " << curr->split_feature << " " << curr->split_val << "\n";

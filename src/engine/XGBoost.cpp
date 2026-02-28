@@ -42,7 +42,7 @@ void XGBoost::load_model(const string &filepath)
     if (!in.is_open())
         throw runtime_error("Could not open model: " + filepath);
 
-    in >> num_trees >> learning_rate >> max_depth;
+    in >> this->num_trees >> this->learning_rate >> this->max_depth;
 
     forest.clear();
 
