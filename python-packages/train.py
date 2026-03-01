@@ -20,6 +20,7 @@ def train() -> int:
     loss = my_xgboost.MSELoss()
 
     # num_trees, learning_rate, max_depth, lambda, gamma, min_cover, objective
+    
     # # Friedman1 Hyperparams
     # model = my_xgboost.XGBoost(500, 0.05, 4, 1.0, 0.0, 1.0, loss)
     # S&P500 Hyperparams
